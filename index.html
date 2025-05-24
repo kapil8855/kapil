@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play Neon Tic Tac Toe free online! Vibrant, mobile-friendly game with AI opponent and glowing effects.">
+    <meta name="keywords" content="Tic Tac Toe, neon Tic Tac Toe, play Tic Tac Toe online, free Tic Tac Toe game, mobile Tic Tac Toe, AI Tic Tac Toe">
+    <meta name="author" content="xAI">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Neon Tic Tac Toe - Play Online Free">
+    <meta property="og:description" content="Challenge the AI in this stunning Neon Tic Tac Toe game! Mobile-friendly, free, and packed with glowing effects.">
+    <meta property="og:image" content="https://example.com/tic-tac-toe-image.jpg">
+    <meta property="og:url" content="https://example.com/neon-tic-tac-toe">
+    <meta property="og:type" content="game">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Neon Tic Tac Toe - Play Online Free">
+    <meta name="twitter:description" content="Play Neon Tic Tac Toe against AI with vibrant visuals! Free, mobile-friendly, and fun.">
+    <meta name="twitter:image" content="https://example.com/tic-tac-toe-image.jpg">
+    <title>Neon Tic Tac Toe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Neon Tic Tac Toe",
+        "description": "A vibrant, mobile-friendly Tic Tac Toe game with AI opponent and neon glowing effects. Play free online!",
+        "applicationCategory": "Game",
+        "operatingSystem": ["Web", "Mobile"],
+        "url": "https://example.com/neon-tic-tac-toe",
+        "image": "https://example.com/tic-tac-toe-image.jpg",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+            animation: bgShift 15s ease infinite;
+        }
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            max-width: 95%;
+            width: 360px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #ff3366;
+            text-shadow: 0 0 5px #ff3366;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        .board-container {
+            position: relative;
+            width: 270px;
+            height: 270px;
+            margin: 15px auto;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 90px);
+            gap: 5px;
+            background: transparent;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        .cell {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.2), rgba(0, 0, 0, 0.8));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+            touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
+        }
+        .cell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .cell:hover::before,
+        .cell:active::before {
+            opacity: 1;
+        }
+        .cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+        .cell.locked {
+            cursor: not-allowed;
+        }
+        .cell.x::after {
+            content: 'X';
+            color: #ff3366;
+            text-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366;
+        }
+        .cell.o::after {
+            content: 'O';
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+        }
+        .cell.winner {
+            animation: sparkle 1.5s ease-in-out infinite;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.5), rgba(0, 0, 0, 0.8));
+        }
+        @keyframes sparkle {
+            0%, 100% { box-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
+            50% { box-shadow: 0 0 25px #00ffcc, 0 0 35px #00ffcc; }
+        }
+        #message {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: #00ffcc;
+            text-shadow: 0 0 5px #00ffcc;
+            min-height: 1.2rem;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        button {
+            background: linear-gradient(45deg, #ff3366, #00ffcc);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .ad-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .ad-container ins {
+            display: inline-block;
+            width: 320px;
+            height: 50px;
+        }
+        @media (max-width: 414px) {
+            .container {
+                width: 95%;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .scoreboard {
+                font-size: 0.9rem;
+                padding: 6px;
+            }
+            .board-container {
+                width: 240px;
+                height: 240px;
+            }
+            .board {
+                grid-template-columns: repeat(3, 80px);
+            }
+            .cell {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+            #message {
+                font-size: 1rem;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            .ad-container ins {
+                width: 300px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Neon Tic Tac Toe</h1>
+        <div class="scoreboard">
+            <div>Player: <span id="scoreX">0</span></div>
+            <div>AI: <span id="scoreO">0</span></div>
+        </div>
+        <div class="board-container">
+            <div class="board" id="board">
+                <div class="cell" data-index="0" role="button" tabindex="0" aria-label="Tic Tac Toe cell 1"></div>
+                <div class="cell" data-index="1" role="button" tabindex="0" aria-label="Tic Tac Toe cell 2"></div>
+                <div class="cell" data-index="2" role="button" tabindex="0" aria-label="Tic Tac Toe cell 3"></div>
+                <div class="cell" data-index="3" role="button" tabindex="0" aria-label="Tic Tac Toe cell 4"></div>
+                <div class="cell" data-index="4" role="button" tabindex="0" aria-label="Tic Tac Toe cell 5"></div>
+                <div class="cell" data-index="5" role="button" tabindex="0" aria-label="Tic Tac Toe cell 6"></div>
+                <div class="cell" data-index="6" role="button" tabindex="0" aria-label="Tic Tac Toe cell 7"></div>
+                <div class="cell" data-index="7" role="button" tabindex="0" aria-label="Tic Tac Toe cell 8"></div>
+                <div class="cell" data-index="8" role="button" tabindex="0" aria-label="Tic Tac Toe cell 9"></div>
+            </div>
+        </div>
+        <div id="message" aria-live="polite"></div>
+        <div class="controls">
+            <button id="restart" role="button" tabindex="0" aria-label="Restart Tic Tac Toe game">Restart Game</button>
+        </div>
+        <div class="ad-container">
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:320px;height:50px"
+                 data-ad-client="ca-pub-3940256099942544"
+                 data-ad-slot="6300978111"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const board = document.getElementById('board');
+            const cells = document.querySelectorAll('.cell');
+            const message = document.getElementById('message');
+            const scoreX = document.getElementById('scoreX');
+            const scoreO = document.getElementById('scoreO');
+            const restartBtn = document.getElementById('restart');
+            let currentBoard = ['', '', '', '', '', '', '', '', ''];
+            let currentPlayer = 'X';
+            let gameActive = true;
+            let scores = { X: 0, O: 0 };
+            let audioInitialized = false;
+            const winCombos = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+            const winSound = new Audio('https://freesound.org/data/previews/387/387947_1386271-lq.mp3');
+            function initGame() {
+                console.log('Preloading sound');
+                winSound.load();
+                cells.forEach(cell => {
+                    cell.addEventListener('click', handleCellClick);
+                    cell.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') handleCellClick(e);
+                    });
+                });
+                restartBtn.addEventListener('click', restartGame);
+                restartBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') restartGame();
+                });
+                // Initialize ads
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error('Ad initialization failed:', e);
+                }
+            }
+            function handleCellClick(e) {
+                const index = e.target.dataset.index;
+                if (currentBoard[index] !== '' || !gameActive) return;
+                if (!audioInitialized) {
+                    console.log('Unlocking audio');
+                    winSound.play().then(() => {
+                        winSound.pause();
+                        winSound.currentTime = 0;
+                        audioInitialized = true;
+                    }).catch(err => console.error('Audio unlock failed:', err));
+                }
+                makeMove(index, currentPlayer);
+                if (gameActive) {
+                    setTimeout(makeAIMove, 300);
+                }
+            }
+            function makeMove(index, player) {
+                currentBoard[index] = player;
+                cells[index].classList.add(player.toLowerCase(), 'locked');
+                console.log(`Move made: Player ${player} at index ${index}`);
+                const winningCombo = checkWin();
+                if (winningCombo) {
+                    gameActive = false;
+                    message.textContent = player === 'X' ? 'You Win! 🎉' : 'AI Wins! 🤖';
+                    scores[player]++;
+                    updateScoreboard();
+                    highlightWinner(winningCombo);
+                    playWinSound();
+                    navigator.vibrate?.(200);
+                    return;
+                }
+                if (currentBoard.every(cell => cell !== '')) {
+                    gameActive = false;
+                    message.textContent = "It's a Draw!";
+                    playWinSound();
+                    navigator.vibrate?.([100, 50, 100]);
+                    return;
+                }
+                currentPlayer = player === 'X' ? 'O' : 'X';
+            }
+            function playWinSound() {
+                console.log('Attempting to play sound');
+                try {
+                    winSound.play().catch(err => console.error('Sound playback failed:', err));
+                } catch (err) {
+                    console.error('Sound error:', err);
+                }
+            }
+            function checkWin() {
+                return winCombos.find(combo => 
+                    combo.every(index => currentBoard[index] === currentPlayer)
+                );
+            }
+            function highlightWinner(combo) {
+                combo.forEach(index => cells[index].classList.add('winner'));
+            }
+            function updateScoreboard() {
+                scoreX.textContent = scores.X;
+                scoreO.textContent = scores.O;
+            }
+            function makeAIMove() {
+                if (!gameActive || currentBoard.every(cell => cell !== '')) return;
+                console.log('AI move triggered');
+                let move = findBestMove('O');
+                if (move !== -1) {
+                    console.log('AI chose index:', move);
+                    makeMove(move, 'O');
+                    return;
+                }
+                move = findBestMove('X');
+                if (move !== -1) {
+                    console.log('AI chose index:', move);
+                    makeMove(move, 'O');
+                    return;
+                }
+                if (currentBoard[4] === '') {
+                    console.log('AI chose index: 4');
+                    makeMove(4, 'O');
+                    return;
+                }
+                const corners = [0, 2, 6, 8];
+                const availableCorners = corners.filter(index => currentBoard[index] === '');
+                if (availableCorners.length > 0) {
+                    const randomCorner = availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                    console.log('AI chose index:', randomCorner);
+                    makeMove(randomCorner, 'O');
+                    return;
+                }
+                const availableSpots = currentBoard.map((cell, index) => cell === '' ? index : -1).filter(index => index !== -1);
+                if (availableSpots.length > 0) {
+                    const randomSpot = availableSpots[Math.floor(Math.random() * availableSpots.length)];
+                    console.log('AI chose index:', randomSpot);
+                    makeMove(randomSpot, 'O');
+                }
+            }
+            function findBestMove(player) {
+                for (let i = 0; i < winCombos.length; i++) {
+                    const [a, b, c] = winCombos[i];
+                    if (currentBoard[a] === player && currentBoard[b] === player && currentBoard[c] === '') return c;
+                    if (currentBoard[a] === player && currentBoard[c] === player && currentBoard[b] === '') return b;
+                    if (currentBoard[b] === player && currentBoard[c] === player && currentBoard[a] === '') return a;
+                }
+                return -1;
+            }
+            function restartGame() {
+                currentBoard = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = 'X';
+                gameActive = true;
+                message.textContent = '';
+                cells.forEach(cell => {
+                    cell.classList.remove('x', 'o', 'locked', 'winner');
+                });
+                navigator.vibrate?.(100);
+            }
+            initGame();
+        });
+    </script>
+</body>
+</html>
